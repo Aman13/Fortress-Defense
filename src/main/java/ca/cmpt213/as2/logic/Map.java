@@ -9,11 +9,14 @@ public class Map {
     private static final int LOWER_BOUND = 1;
     private static final int MAP_WIDTH = 10;
     private static final int MAP_HEIGHT = 10;
-    private static final int TANK_SYMBOL = 1;
     private static final int TANK_PIECES_REQUIRED = 4;
     private static final int ARRAY_POSITION_SIZE = 2;
     private static final int ROW_INDEX = 0;
     private static final int COL_INDEX = 1;
+
+    private static final int TANK_SYMBOL = 1;
+    private static final int MISS_SYMBOL = 2;
+    private static final int HIT_SYMBOL = 3;
 
     private static int[][] board;
     private static List<Integer[]> possibleLocations;
@@ -182,6 +185,15 @@ public class Map {
 
     private int generateNumberBetween(int min, int max, int range) {
         return  (int) (Math.random() * max + min) % range;
+    }
+
+    public boolean checkForHit(int row, int col) {
+        if (board[row][col] == TANK_SYMBOL) {
+            board[row][col] = HIT_SYMBOL;
+            return true;
+        }
+        board[row][col] = MISS_SYMBOL;
+        return false;
     }
 
 }
