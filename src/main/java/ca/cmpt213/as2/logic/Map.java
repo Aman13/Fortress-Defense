@@ -10,8 +10,10 @@ public class Map {
     private static final int MAP_WIDTH = 10;
     private static final int MAP_HEIGHT = 10;
     private static final int TANK_SYMBOL = 1;
-    private static final int TANK_LOCATIONS = 8;
+    private static final int TANK_PIECES_REQUIRED = 4;
     private static final int ARRAY_POSITION_SIZE = 2;
+    private static final int ROW_INDEX = 0;
+    private static final int COL_INDEX = 1;
 
     private static int[][] board;
     private static List<Integer[]> possibleLocations;
@@ -36,20 +38,18 @@ public class Map {
         }
     }
 
-    public int[] generateTankPosition() {
+    public Integer[] generateTankPosition() {
         possibleLocations = new ArrayList<>();
-        int[] tankPosition = new int[TANK_LOCATIONS];
-        int tankIndex = 0;
-        boolean validLocation = false;
+        Integer[] tankPiecePosition;
+        List<Integer[]> tankPieces = new ArrayList<>();
+        boolean validLocation;
         rowPosition = 0;
         colPosition = 0;
-        int[] startingPos = findTankStartingPosition();
-        tankPosition[tankIndex] = startingPos[tankIndex];
-        tankIndex++;
-        tankPosition[tankIndex] = startingPos[tankIndex];
-        tankIndex++;
+        tankPiecePosition = findTankStartingPosition();
+        tankPieces.add(tankPiecePosition);
+        tankPiecePosition = new Integer[ARRAY_POSITION_SIZE];
 
-        while (tankIndex < TANK_LOCATIONS) {
+        while (tankPieces.size() != TANK_PIECES_REQUIRED) {
             validLocation = false;
             int index;
             Integer[] entry;
@@ -60,13 +60,10 @@ public class Map {
                 if (possibleLocations.size() == 0) {
                     //Starting Location didn't have enough space around it to create the tank
                     System.out.println(" \n\n\n******** MAKE RESET NOW ********\n\n\n");
-                    resetIncompleteTank(tankPosition, tankIndex);
-                    startingPos = findTankStartingPosition();
-                    tankIndex = 0;
-                    tankPosition[tankIndex] = startingPos[tankIndex];
-                    tankIndex++;
-                    tankPosition[tankIndex] = startingPos[tankIndex];
-                    tankIndex++;
+                    resetIncompleteTank(tankPieces);
+                    tankPiecePosition = findTankStartingPosition();
+                    tankPieces.add(tankPiecePosition);
+                    tankPiecePosition = new Integer[ARRAY_POSITION_SIZE];
                     generatePossibleLocations(rowPosition, colPosition);
                     validLocation = true;
                 }
@@ -78,10 +75,11 @@ public class Map {
                 if (board[rowPosition][colPosition] == 0) {
                     //Found Open Spot
                     board[rowPosition][colPosition] = TANK_SYMBOL;
-                    tankPosition[tankIndex] = rowPosition;
-                    tankIndex++;
-                    tankPosition[tankIndex] = colPosition;
-                    tankIndex++;
+                    tankPiecePosition[ROW_INDEX] = rowPosition;
+                    tankPiecePosition[COL_INDEX] = colPosition;
+                    tankPieces.add(tankPiecePosition);
+                    tankPiecePosition = new Integer[ARRAY_POSITION_SIZE];
+                    generatePossibleLocations(rowPosition, colPosition);
                     possibleLocations.remove(index);
                     validLocation = true;
                 } else {
@@ -93,20 +91,18 @@ public class Map {
         }
 
         System.out.println("\t****\nPrinting tank positions:\n\t****");
-        for (int i = 0; i < TANK_LOCATIONS; i++) {
-            System.out.printf("row: %d col: %d\n", tankPosition[i], tankPosition[i+1]);
-            i++;
+        for (Integer[] tankPiece : tankPieces) {
+            System.out.printf("row: %d col: %d\n", tankPiece[ROW_INDEX], tankPiece[COL_INDEX]);
         }
         System.out.println("\t****\n\t****");
 
-        return tankPosition;
+        return tankPiecePosition;
     }
 
-    private int[] findTankStartingPosition() {
+    private Integer[] findTankStartingPosition() {
 
         boolean validLocation = false;
-        int index = 0;
-        int[] startingPosition = new int[ARRAY_POSITION_SIZE];
+        Integer[] startingPosition = new Integer[ARRAY_POSITION_SIZE];
 
         while(!validLocation) {
             rowPosition = generateNumberBetween(LOWER_BOUND, UPPER_BOUND, MAP_HEIGHT);
@@ -114,9 +110,8 @@ public class Map {
             if(board[rowPosition][colPosition] == 0) {
                 System.out.println("Row: " + rowPosition + " Col: " + colPosition);
                 board[rowPosition][colPosition] = TANK_SYMBOL;
-                startingPosition[index] = rowPosition;
-                index++;
-                startingPosition[index] = colPosition;
+                startingPosition[ROW_INDEX] = rowPosition;
+                startingPosition[COL_INDEX] = colPosition;
                 validLocation = true;
             }
         }
@@ -124,57 +119,53 @@ public class Map {
         return startingPosition;
     }
 
-    private void resetIncompleteTank(int[] incompleteTank, int tankIndex) {
-        int i = 0;
-        int row;
-        int col;
-        while (i < tankIndex) {
-            row = incompleteTank[i];
-            col = incompleteTank[i+1];
-            board[row][col] = 0;
-            i++;
-            i++;
+    private void resetIncompleteTank(List<Integer[]> incompleteTank) {
+        Integer[] currentPiece;
+        for (int i = 0; i < incompleteTank.size(); i++) {
+            currentPiece = incompleteTank.get(i);
+            board[currentPiece[ROW_INDEX]][currentPiece[COL_INDEX]] = 0;
         }
+        incompleteTank.clear();
     }
 
     private void generatePossibleLocations(int row, int col) {
-        Integer[] temp = new Integer[ARRAY_POSITION_SIZE];
+        Integer[] locationHolder = new Integer[ARRAY_POSITION_SIZE];
 
         if (col == 0) {
-            temp[0] = row;
-            temp[1] = col + 1;
-            possibleLocations.add(temp);
+            locationHolder[0] = row;
+            locationHolder[1] = col + 1;
+            possibleLocations.add(locationHolder);
         } else if (col == board.length - 1) {
-            temp[0] = row;
-            temp[1] = col - 1;
-            possibleLocations.add(temp);
+            locationHolder[0] = row;
+            locationHolder[1] = col - 1;
+            possibleLocations.add(locationHolder);
         } else {
-            temp[0] = row;
-            temp[1] = col - 1;
-            possibleLocations.add(temp);
-            temp = new Integer[ARRAY_POSITION_SIZE]; // <-Why do I have to reset?
-            temp[0] = row;
-            temp[1] = col + 1;
-            possibleLocations.add(temp);
+            locationHolder[0] = row;
+            locationHolder[1] = col - 1;
+            possibleLocations.add(locationHolder);
+            locationHolder = new Integer[ARRAY_POSITION_SIZE];
+            locationHolder[0] = row;
+            locationHolder[1] = col + 1;
+            possibleLocations.add(locationHolder);
         }
 
-        temp = new Integer[ARRAY_POSITION_SIZE];
+        locationHolder = new Integer[ARRAY_POSITION_SIZE];
         if (row == 0) {
-            temp[0] = row + 1;
-            temp[1] = col;
-            possibleLocations.add(temp);
+            locationHolder[0] = row + 1;
+            locationHolder[1] = col;
+            possibleLocations.add(locationHolder);
         } else if ( row == board.length - 1) {
-            temp[0] = row - 1;
-            temp[1] = col;
-            possibleLocations.add(temp);
+            locationHolder[0] = row - 1;
+            locationHolder[1] = col;
+            possibleLocations.add(locationHolder);
         } else {
-            temp[0] = row - 1;
-            temp[1] = col;
-            possibleLocations.add(temp);
-            temp = new Integer[ARRAY_POSITION_SIZE];
-            temp[0] = row + 1;
-            temp[1] = col;
-            possibleLocations.add(temp);
+            locationHolder[0] = row - 1;
+            locationHolder[1] = col;
+            possibleLocations.add(locationHolder);
+            locationHolder = new Integer[ARRAY_POSITION_SIZE];
+            locationHolder[0] = row + 1;
+            locationHolder[1] = col;
+            possibleLocations.add(locationHolder);
         }
 
     }
