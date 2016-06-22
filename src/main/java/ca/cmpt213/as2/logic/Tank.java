@@ -1,18 +1,25 @@
 package ca.cmpt213.as2.logic;
 
+import java.util.List;
+import java.util.ArrayList;
+
+
+
 public class Tank {
+    private static final int TANK_PIECES_REQUIRED = 4;
+    private static final int ROW_INDEX = 0;
+    private static final int COL_INDEX = 1;
+
     private static final int[] STARTING_HEALTH = {1,1,1,1};
-    private static final int LOCATION_MAX = 8;
-    private static final int ARRAY_POSITION_SIZE = 2;
-    private int[] location;
+    private List<Integer[]> location;
     private int[] health;
 
-    public Tank(int[] location) {
-        this.location = location;
+    public Tank(List<Integer[]> location) {
+        this.location = new ArrayList<>(location);
         this.health = STARTING_HEALTH;
     }
 
-    public int[] getLocation() {
+    public List<Integer[]> getLocation() {
         return this.location;
     }
 
@@ -21,18 +28,14 @@ public class Tank {
     }
 
     public void updateHealth(int row, int col, int newHealthValue) {
-        int rowIndex;
-        int colIndex;
-        int healthIndex = 0;
+        int locationIndex = 0;
         int damagedPiece = 0;
         boolean locationFound = false;
-        for (rowIndex = 0; rowIndex + 1 < LOCATION_MAX; rowIndex += ARRAY_POSITION_SIZE) {
-            colIndex = rowIndex + 1;
-            if(location[rowIndex] == row && location[colIndex] == col) {
+        for (int i = 0; i < TANK_PIECES_REQUIRED; i++) {
+            if(location.get(i)[ROW_INDEX] == row && location.get(i)[COL_INDEX] == col) {
                 locationFound = true;
-                damagedPiece = healthIndex;
+                damagedPiece = i;
             }
-            healthIndex++;
         }
         if (locationFound) {
             health[damagedPiece] = newHealthValue;
@@ -65,5 +68,4 @@ public class Tank {
 
 
 }
-
 
