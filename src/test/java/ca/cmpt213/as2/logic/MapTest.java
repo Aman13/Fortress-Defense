@@ -17,7 +17,7 @@ public class MapTest {
         Map map = new Map();
         int[][] board = map.getMap();
         for (int[] row : board) {
-            assertArrayEquals(row, INITIALIZED_ROW);
+            assertArrayEquals(INITIALIZED_ROW, row);
         }
     }
 
