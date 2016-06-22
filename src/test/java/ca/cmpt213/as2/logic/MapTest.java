@@ -6,10 +6,10 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
 public class MapTest {
-    private static final int[] initializedRow = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    private static final int oneTankPosition = 4;
-    private static final int tenTankPosition = 40;
-    private static final int fifteenTankPosition = 60;
+    private static final int[] INITIALIZED_ROW = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private static final int ONE_TANK_POSITION_COUNT = 4;
+    private static final int TEN_TANK_POSITION_COUNT = 40;
+    private static final int FIFTEEN_TANK_POSITION_COUNT = 60;
 
 
     @Test
@@ -17,7 +17,7 @@ public class MapTest {
         Map map = new Map();
         int[][] board = map.getMap();
         for (int[] row : board) {
-            assertArrayEquals(row, initializedRow);
+            assertArrayEquals(row, INITIALIZED_ROW);
         }
     }
 
@@ -34,7 +34,7 @@ public class MapTest {
                 }
             }
         }
-        Assert.assertEquals(oneTankPosition, tankPositionsFound, 0);
+        Assert.assertEquals(ONE_TANK_POSITION_COUNT, tankPositionsFound, 0);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class MapTest {
                 }
             }
         }
-        Assert.assertEquals(tenTankPosition, tankPositionsFound, 0);
+        Assert.assertEquals(TEN_TANK_POSITION_COUNT, tankPositionsFound, 0);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class MapTest {
                 }
             }
         }
-        Assert.assertEquals(fifteenTankPosition, tankPositionsFound, 0);
+        Assert.assertEquals(FIFTEEN_TANK_POSITION_COUNT, tankPositionsFound, 0);
     }
 
 }
