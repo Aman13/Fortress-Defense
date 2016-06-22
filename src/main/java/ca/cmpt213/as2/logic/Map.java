@@ -13,15 +13,15 @@ public class Map {
     private static final int ARRAY_POSITION_SIZE = 2;
     private static final int ROW_INDEX = 0;
     private static final int COL_INDEX = 1;
-
     private static final int TANK_SYMBOL = 1;
     private static final int MISS_SYMBOL = 2;
     private static final int HIT_SYMBOL = 3;
 
-    private static int[][] board;
     private static List<Integer[]> possibleLocations;
     private static int rowPosition;
     private static int colPosition;
+
+    private int[][] board;
 
 
     public Map() {
@@ -41,7 +41,7 @@ public class Map {
         }
     }
 
-    public Integer[] generateTankPosition() {
+    public List<Integer[]> generateTankPosition() {
         possibleLocations = new ArrayList<>();
         Integer[] tankPiecePosition;
         List<Integer[]> tankPieces = new ArrayList<>();
@@ -62,7 +62,6 @@ public class Map {
                 //find a random number from ArrayList
                 if (possibleLocations.size() == 0) {
                     //Starting Location didn't have enough space around it to create the tank
-                    System.out.println(" \n\n\n******** MAKE RESET NOW ********\n\n\n");
                     resetIncompleteTank(tankPieces);
                     tankPiecePosition = findTankStartingPosition();
                     tankPieces.add(tankPiecePosition);
@@ -70,7 +69,6 @@ public class Map {
                     generatePossibleLocations(rowPosition, colPosition);
                     validLocation = true;
                 }
-                printLocationsFound();
                 index = generateNumberBetween(LOWER_BOUND, UPPER_BOUND, possibleLocations.size());
                 entry = possibleLocations.get(index);
                 rowPosition = entry[0];
@@ -92,18 +90,10 @@ public class Map {
 
             }
         }
-
-        System.out.println("\t****\nPrinting tank positions:\n\t****");
-        for (Integer[] tankPiece : tankPieces) {
-            System.out.printf("row: %d col: %d\n", tankPiece[ROW_INDEX], tankPiece[COL_INDEX]);
-        }
-        System.out.println("\t****\n\t****");
-
-        return tankPiecePosition;
+        return tankPieces;
     }
 
     private Integer[] findTankStartingPosition() {
-
         boolean validLocation = false;
         Integer[] startingPosition = new Integer[ARRAY_POSITION_SIZE];
 
@@ -111,19 +101,18 @@ public class Map {
             rowPosition = generateNumberBetween(LOWER_BOUND, UPPER_BOUND, MAP_HEIGHT);
             colPosition = generateNumberBetween(LOWER_BOUND, UPPER_BOUND, MAP_HEIGHT);
             if(board[rowPosition][colPosition] == 0) {
-                System.out.println("Row: " + rowPosition + " Col: " + colPosition);
                 board[rowPosition][colPosition] = TANK_SYMBOL;
                 startingPosition[ROW_INDEX] = rowPosition;
                 startingPosition[COL_INDEX] = colPosition;
                 validLocation = true;
             }
         }
-
         return startingPosition;
     }
 
     private void resetIncompleteTank(List<Integer[]> incompleteTank) {
         Integer[] currentPiece;
+
         for (int i = 0; i < incompleteTank.size(); i++) {
             currentPiece = incompleteTank.get(i);
             board[currentPiece[ROW_INDEX]][currentPiece[COL_INDEX]] = 0;
@@ -151,8 +140,8 @@ public class Map {
             locationHolder[1] = col + 1;
             possibleLocations.add(locationHolder);
         }
-
         locationHolder = new Integer[ARRAY_POSITION_SIZE];
+
         if (row == 0) {
             locationHolder[0] = row + 1;
             locationHolder[1] = col;
@@ -171,16 +160,6 @@ public class Map {
             possibleLocations.add(locationHolder);
         }
 
-    }
-
-    private void printLocationsFound() {
-        System.out.println("Possible Locations");
-        for (Integer[] entry : possibleLocations) {
-            for (Integer value : entry) {
-                System.out.printf("%d ", value);
-            }
-            System.out.println();
-        }
     }
 
     private int generateNumberBetween(int min, int max, int range) {
