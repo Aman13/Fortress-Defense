@@ -170,9 +170,13 @@ public class Map {
         if (board[row][col] == TANK_SYMBOL) {
             board[row][col] = HIT_SYMBOL;
             return true;
+        } else if (board[row][col] == HIT_SYMBOL) {
+            //keep as hit symbol
+            return false;
+        } else {
+            board[row][col] = MISS_SYMBOL;
+            return false;
         }
-        board[row][col] = MISS_SYMBOL;
-        return false;
     }
 
 }

@@ -14,6 +14,8 @@ public class TextUi {
     private static final int ASCII_A = 97;
     private static final int PLAY = 1;
     private static final int EXIT = 2;
+    private static final int ROW_INDEX = 0;
+    private static final int COL_INDEX = 1;
 
     public TextUi(GameLogic logic) {
         this.logic = logic;
@@ -22,9 +24,27 @@ public class TextUi {
     public void runGame() {
         int startGame = startGame();
         if (startGame == PLAY) {
-            getUserInput();
-            displayMap();
+            logic.initializeGame();
+            gameDriver();
         }
+    }
+
+    private void gameDriver() {
+        Integer[] locations;
+        while(logic.checkForWinLose() == 0) {
+            displayMap();
+            locations = getUserInput();
+            logic.updateTankAndMap(locations[ROW_INDEX], locations[COL_INDEX]);
+            logic.updateFortressHealth();
+        }
+        if (logic.checkForWinLose() == -1) {
+            System.out.println("You lost :(");
+            runGame();
+        } else if (logic.checkForWinLose() == 1) {
+            System.out.println("Winner Winner Chicken Dinner");
+            runGame();
+        }
+
     }
 
     private void areWeAlive() {
@@ -44,6 +64,7 @@ public class TextUi {
             System.out.println();
             letterLegend++;
         }
+        System.out.println("Fortress Structure Left: " + logic.getFortressHealth());
     }
 
     private void mapSymbolConverter(int entry) {
@@ -107,25 +128,16 @@ public class TextUi {
         int colInput = 0;
         boolean valid = false;
         Integer[] location = {0,0};
-        System.out.println("Please enter a letter A-J: ");
+        System.out.println("Enter your move: ");
         while (!valid) {
+            String input = scanner.next();
             try {
-                //int col = ((int) scanner.next().toLowerCase().charAt(0)) - ASCII_A;
-                rowInput = scanner.next().toLowerCase().charAt(0);
+                rowInput = input.toLowerCase().charAt(0);
+                colInput = Integer.parseInt(input.substring(1));
                 valid = true;
-            } catch (InputMismatchException e) {
-                System.out.println("Please enter a character!");
-                scanner.nextLine();
-            }
-        }
-        valid = false;
-        System.out.println("Please enter an integer 1-10: ");
-        while (!valid) {
-            try {
-                colInput = scanner.nextInt();
-                valid = true;
-            } catch (InputMismatchException e) {
-                System.out.println("Please enter an integer!");
+            } catch (Exception e) {
+                System.out.println("row : " + rowInput + " col: " + colInput);
+                System.out.println("Invalid input. Letter must be between A-J and the integer must be between 1-10. Ex b4 ");
                 scanner.nextLine();
             }
         }
@@ -135,7 +147,7 @@ public class TextUi {
             location[0] = row;
             location[1] = col;
         } else {
-            System.out.println("Invalid input. Letter must be between A-J and the integer must be between 1-10. ");
+            System.out.println("Invalid input. Letter must be between A-J and the integer must be between 1-10. Ex b4 ");
             getUserInput();
         }
         return location;

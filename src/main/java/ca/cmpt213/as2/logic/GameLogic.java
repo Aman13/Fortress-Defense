@@ -13,6 +13,10 @@ public class GameLogic {
     private int fortressHp;
 
     public GameLogic() {
+
+    }
+
+    public void initializeGame() {
         this.fortressHp = MAX_HEALTH;
         this.map = new Map();
         for (int i = 0; i < TANKS_REQUIRED; i++) {
