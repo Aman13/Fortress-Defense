@@ -52,12 +52,14 @@ public class GameLogic {
         }
     }
 
-    public void updateTankAndMap(int row, int col) {
-        if (map.checkForHit(row, col)) {
+    public boolean updateTankAndMap(int row, int col) {
+        boolean hit = map.checkForHit(row, col);
+        if (hit) {
             for(Tank tank : tanks) {
                 tank.updateHealth(row, col);
             }
         }
+        return hit;
     }
 
     /**

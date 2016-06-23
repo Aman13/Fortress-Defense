@@ -25,6 +25,7 @@ public class TextUi {
         int startGame = startGame();
         if (startGame == PLAY) {
             logic.initializeGame();
+            displayMap();
             gameDriver();
         }
     }
@@ -32,16 +33,24 @@ public class TextUi {
     private void gameDriver() {
         Integer[] locations;
         while(logic.checkForWinLose() == 0) {
-            displayMap();
             locations = getUserInput();
-            logic.updateTankAndMap(locations[ROW_INDEX], locations[COL_INDEX]);
+            boolean hit = logic.updateTankAndMap(locations[ROW_INDEX], locations[COL_INDEX]);
+            displayMap();
+            if (hit) {
+                System.out.printf("%nA tank was hit!%n");
+            } else {
+                System.out.printf("%nYou missed!%n");
+            }
             logic.updateFortressHealth();
+            int damage = logic.calculateTankDamage();
+            System.out.printf("Your fortress took %d damage from the tanks. %n", damage);
+            System.out.println("Fortress Structure Left: " + logic.getFortressHealth());
         }
         if (logic.checkForWinLose() == -1) {
-            System.out.println("You lost :(");
+            System.out.printf("%nGame over. You lost :(%n%n");
             runGame();
         } else if (logic.checkForWinLose() == 1) {
-            System.out.println("Winner Winner Chicken Dinner");
+            System.out.printf("%nYou won!%n%n");
             runGame();
         }
 
@@ -53,7 +62,7 @@ public class TextUi {
 
     private void displayMap() {
         int[][] map = logic.getMap();
-        System.out.println("Game Board: ");
+        System.out.printf("%nGame Board: %n");
         displayNumberLegend();
         char letterLegend = 'A';
         for (int[] row : map) {
@@ -64,7 +73,6 @@ public class TextUi {
             System.out.println();
             letterLegend++;
         }
-        System.out.println("Fortress Structure Left: " + logic.getFortressHealth());
     }
 
     private void mapSymbolConverter(int entry) {
@@ -115,7 +123,7 @@ public class TextUi {
             }
         }
         if (menuChoice != PLAY && menuChoice != EXIT) {
-            System.out.printf("menu choice: %d%n", menuChoice);
+            System.out.printf("Menu choice: %d%n", menuChoice);
             startGameScanner();
         }
         scanner.nextLine();
@@ -128,7 +136,7 @@ public class TextUi {
         int colInput = 0;
         boolean valid = false;
         Integer[] location = {0,0};
-        System.out.println("Enter your move: ");
+        System.out.printf("%nEnter your move in the form <letter><number>: %n");
         while (!valid) {
             String input = scanner.next();
             try {
@@ -136,7 +144,6 @@ public class TextUi {
                 colInput = Integer.parseInt(input.substring(1));
                 valid = true;
             } catch (Exception e) {
-                System.out.println("row : " + rowInput + " col: " + colInput);
                 System.out.println("Invalid input. Letter must be between A-J and the integer must be between 1-10. Ex b4 ");
                 scanner.nextLine();
             }
@@ -148,7 +155,7 @@ public class TextUi {
             location[1] = col;
         } else {
             System.out.println("Invalid input. Letter must be between A-J and the integer must be between 1-10. Ex b4 ");
-            getUserInput();
+            location = getUserInput();
         }
         return location;
     }
