@@ -16,18 +16,21 @@ public class GameLogicTest {
     @Test
     public void testStartingFortressHealth() throws Exception {
         GameLogic logic = new GameLogic();
+        logic.initializeGame();
         Assert.assertEquals(FORTRESS_MAX_HEALTH, logic.getFortressHealth(), 0);
     }
 
     @Test
     public void testTankDamage() {
         GameLogic logic = new GameLogic();
+        logic.initializeGame();
         Assert.assertEquals(FULL_HEALTH_TANK_VOLLEY_DAMAGE, logic.calculateTankDamage(), 0);
     }
 
     @Test
     public void testFortressHealthAfterFullHealthTankDamage() {
         GameLogic logic = new GameLogic();
+        logic.initializeGame();
         logic.updateFortressHealth();
         Assert.assertEquals(FORTRESS_DAMAGED_FIVE_FULL_HEALTH_TANKS, logic.getFortressHealth(), 0);
     }
@@ -35,6 +38,7 @@ public class GameLogicTest {
     @Test
     public void testHitTankDamageReduced() {
         GameLogic logic = new GameLogic();
+        logic.initializeGame();
         List<Integer[]> tankLocations = logic.getTank(0).getLocation();
         for (Integer[] tankPiece : tankLocations) {
             logic.updateTankAndMap(tankPiece[0], tankPiece[1]);
@@ -46,6 +50,7 @@ public class GameLogicTest {
     @Test
     public void testWinCondition() {
         GameLogic logic = new GameLogic();
+        logic.initializeGame();
         List<Tank> tanks = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             tanks.add(logic.getTank(i));
@@ -62,6 +67,7 @@ public class GameLogicTest {
     @Test
     public void testLoseCondition() {
         GameLogic logic = new GameLogic();
+        logic.initializeGame();
         for (int i = 0; i < 15; i++) {
             Assert.assertEquals(0, logic.checkForWinLose(), 0);
             logic.updateFortressHealth();
@@ -72,6 +78,7 @@ public class GameLogicTest {
     @Test
     public void testMapTankGeneration() {
         GameLogic logic = new GameLogic();
+        logic.initializeGame();
         int[][] board = logic.getMap();
         int tankPositionsFound = 0;
         for (int[] row : board) {
@@ -87,6 +94,7 @@ public class GameLogicTest {
     @Test
     public void testMapDestroyedTanks() {
         GameLogic logic = new GameLogic();
+        logic.initializeGame();
         List<Tank> tanks = new ArrayList<>();
         int[][] board = logic.getMap();
         int destroyedTankPieces = 0;
@@ -112,6 +120,7 @@ public class GameLogicTest {
     @Test
     public void testMapOneDestroyedTank() {
         GameLogic logic = new GameLogic();
+        logic.initializeGame();
         int[][] board = logic.getMap();
         int destroyedTankPieces = 0;
         int functionalTankPieces = 0;
