@@ -16,11 +16,10 @@ public class Map {
     private static final int TANK_SYMBOL = 1;
     private static final int MISS_SYMBOL = 2;
     private static final int HIT_SYMBOL = 3;
-
-    private static List<Integer[]> possibleLocations;
     private static int rowPosition;
     private static int colPosition;
 
+    private List<Integer[]> possibleLocations;
     private int[][] board;
 
 
@@ -33,12 +32,6 @@ public class Map {
 
     public int[][] getMap() {
         return this.board;
-    }
-
-    private void printMap() {
-        for (int[] row : board) {
-            System.out.println(Arrays.toString(row));
-        }
     }
 
     public List<Integer[]> generateTankPosition() {

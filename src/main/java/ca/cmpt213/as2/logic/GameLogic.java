@@ -7,9 +7,9 @@ import java.util.List;
 public class GameLogic {
     private static final int MAX_HEALTH = 1500;
     private static final int TANKS_REQUIRED = 5;
+
     private Map map;
     private List<Tank> tanks = new ArrayList<>();
-
     private int fortressHp;
 
     public GameLogic() {
@@ -33,6 +33,10 @@ public class GameLogic {
         return totalDamage;
     }
 
+    public int getTankDamage(int index) {
+        return tanks.get(index).damage();
+    }
+
     public int getFortressHealth() {
         return this.fortressHp;
     }
@@ -44,12 +48,6 @@ public class GameLogic {
 
     public int[][] getMap() {
         return map.getMap();
-    }
-
-    public void printTestMap() {
-        for (int[] row : map.getMap()) {
-            System.out.println(Arrays.toString(row));
-        }
     }
 
     public boolean updateTankAndMap(int row, int col) {

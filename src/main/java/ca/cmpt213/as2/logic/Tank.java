@@ -7,8 +7,8 @@ public class Tank {
     private static final int TANK_PIECES_REQUIRED = 4;
     private static final int ROW_INDEX = 0;
     private static final int COL_INDEX = 1;
-
     private final int[] STARTING_HEALTH = {1,1,1,1};
+
     private List<Integer[]> location;
     private int[] health;
 
